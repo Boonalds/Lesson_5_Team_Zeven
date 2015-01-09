@@ -7,7 +7,7 @@ library(rgeos)
 library(rgdal)
 
 # Load sources
-
+ 
 # Download, unzip and load data
 download.file(url = 'http://www.mapcruzin.com/download-shapefile/netherlands-places-shape.zip',
               destfile = 'data/places.zip',  method = 'auto')
