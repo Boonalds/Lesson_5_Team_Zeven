@@ -25,26 +25,26 @@ prj_string_RD <- CRS("+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888
 railwaysRD <- spTransform(railways.shape, prj_string_RD)
 placesRD <- spTransform(places.shape, prj_string_RD)
 
-# Selecting industrial railways
+# Selecting industrial railways and creating a buffer around them
 industrial <- railwaysRD[railwaysRD$type == 'industrial',]
-
-# buffer around industrial railways
 industrialbuf <- gBuffer(industrial, byid=T,width=1000)
 
-# Intersect with places to find city name
+# Intersect buffer with places dataset to find city name
 placeswithinbuffer <- gIntersection(placesRD,industrialbuf, byid=T)
 rownames<-row.names(placeswithinbuffer)
-cityrowname<-unlist(strsplit(rownames, split=' '))[1]
-cityname <- as.character(placesRD$name[row.names(placesRD) == cityrowname][1])
-cityname
+cityrowname<-unlist(strsplit(rownames, split=' '))[1]  #The city-ID was returned as a string "5973 0".
+cityname <- as.character(placesRD$name[row.names(placesRD) == cityrowname][1]
 
-# Post processing
+# Post processing/plotting
 loclabel<- c(placeswithinbuffer$x,placeswithinbuffer$y-50) # -50 to have the name just under the marker
 spplot(industrialbuf, zcol='type', main = "Buffer around industrial railway and intersected city", 
-       sp.layout=list(list("sp.points", placeswithinbuffer, pch=1, cex=2, col="red"),
-                      list("sp.text",loclabel,cityname)),
-       scales = list(draw = TRUE), xlab="longitude", ylab="latitude"
-)
+       sp.layout=list(list("sp.points", placeswithinbuffer, pch=19, cex=2, col="darkgreen"),
+                      list("sp.text",loclabel,cityname, cex=2),
+                      list("sp.lines",industrial, col="purple")),
+       scales = list(draw = TRUE), xlab="longitude", ylab="latitude",
+       col.regions=c("red","yellow")
+      )
 
 # Printing population
-# WIP
+popcity <- placesRD$population[row.names(placesRD) == cityrowname][1]
+paste(cityname,"has a population of",popcity,"people")
