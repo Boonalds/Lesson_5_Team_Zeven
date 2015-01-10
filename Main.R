@@ -6,7 +6,7 @@ library(sp)
 library(rgeos)
 library(rgdal)
 
-# Load sources
+# Load sources - as everything is very sequential we did not create seperate functions
   
 # Download, unzip and load data
 download.file(url = 'http://www.mapcruzin.com/download-shapefile/netherlands-places-shape.zip',
@@ -20,7 +20,7 @@ unzip('data/railways.zip', exdir = "./data/railways")
 places.shape<-readOGR(dsn='data/places/places.shp', layer='places')
 railways.shape<-readOGR(dsn='data/railways/railways.shp', layer='railways')
 
-# Projecting the shapefiles
+# Projecting the shapefiles to the RD system
 prj_string_RD <- CRS("+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +towgs84=565.2369,50.0087,465.658,-0.406857330322398,0.350732676542563,-1.8703473836068,4.0812 +units=m +no_defs")
 railwaysRD <- spTransform(railways.shape, prj_string_RD)
 placesRD <- spTransform(places.shape, prj_string_RD)
@@ -35,9 +35,9 @@ rownames<-row.names(placeswithinbuffer)
 cityrowname<-unlist(strsplit(rownames, split=' '))[1]  #The city-ID was returned as a string "5973 0".
 cityname <- as.character(placesRD$name[row.names(placesRD) == cityrowname][1]
 
-# Post processing/plotting
-loclabel<- c(placeswithinbuffer$x,placeswithinbuffer$y-50) # -50 to have the name just under the marker
-spplot(industrialbuf, zcol='type', main = "Buffer around industrial railway and intersected city", 
+# Post-processing/plotting
+loclabel<- c(placeswithinbuffer$x,placeswithinbuffer$y+80) # +80 to have the name just above the marker
+spplot(industrialbuf, zcol='type', main = "Buffer around industrial railway, and intersected city", 
        sp.layout=list(list("sp.points", placeswithinbuffer, pch=19, cex=2, col="darkgreen"),
                       list("sp.text",loclabel,cityname, cex=2),
                       list("sp.lines",industrial, col="purple")),
