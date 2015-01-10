@@ -33,7 +33,7 @@ industrialbuf <- gBuffer(industrial, byid=T,width=1000)
 placeswithinbuffer <- gIntersection(placesRD,industrialbuf, byid=T)
 rownames<-row.names(placeswithinbuffer)
 cityrowname<-unlist(strsplit(rownames, split=' '))[1]  #The city-ID was returned as a string "5973 0".
-cityname <- as.character(placesRD$name[row.names(placesRD) == cityrowname][1]
+cityname <- as.character(placesRD$name[row.names(placesRD) == cityrowname])[1]
 
 # Post-processing/plotting
 loclabel<- c(placeswithinbuffer$x,placeswithinbuffer$y+80) # +80 to have the name just above the marker
@@ -41,7 +41,7 @@ spplot(industrialbuf, zcol='type', main = "Buffer around industrial railway, and
        sp.layout=list(list("sp.points", placeswithinbuffer, pch=19, cex=2, col="darkgreen"),
                       list("sp.text",loclabel,cityname, cex=2),
                       list("sp.lines",industrial, col="purple")),
-       scales = list(draw = TRUE), xlab="longitude", ylab="latitude",
+       scales = list(draw = TRUE), xlab="Longitude", ylab="Latitude",
        col.regions=c("red","yellow")
       )
 
