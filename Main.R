@@ -35,20 +35,24 @@ rownames<-row.names(placeswithinbuffer)
 cityrowname<-unlist(strsplit(rownames, split=' '))[1]  #The city-ID was returned as a string "5973 0".
 cityname <- as.character(placesRD$name[row.names(placesRD) == cityrowname])[1]
 
-# Post-processing/plotting
+# Post-processing
 loclabel<- c(placeswithinbuffer$x,placeswithinbuffer$y+80) # +80 to have the name just above the marker
-labelno <- c(1,2,3)
-labeltext <- c('Buffer (1000 m)','City','Industrial railway')
-industrialbuf$legend.labels <- factor(industrialbuf$type, levels = 0:2)
+industrialbuf$legend.labels <- factor(industrialbuf$type, levels = 0:2) # Create an extra variable in the dataframe. The number of levels is the numbers of attributes displayed in the legend
+labelno <- c(1,2,3) # Numbers of the attributes in the legend that should get a label
+labeltext <- c('Buffer (1000 m)','City','Industrial railway')# Labels for the legend
+
+# Plotting
 spplot(industrialbuf, zcol='legend.labels', main = "Buffer around industrial railway, and intersected city", 
-       sp.layout=list(list("sp.polygons", industrialbuf, fill = "yellow"),
-                      list("sp.points", placeswithinbuffer, pch=19, cex=2, col="darkgreen"),
+       sp.layout=list(list("sp.polygons", industrialbuf, fill = "gray", col = "dimgray"),
+                      list("sp.points", placeswithinbuffer, pch=19, cex=2, col="blue"),
                       list("sp.text",loclabel,cityname, cex=1.5),
-                      list("sp.lines",industrial, col="purple")
+                      list("sp.lines",industrial, col="red"),
+                      list("SpatialPolygonsRescale", layout.north.arrow(), offset = c(134400,456400), 
+                           scale = 300, fill=c("transparent","black"))
                       ),
        scales = list(draw = TRUE), xlab="Longitude", ylab="Latitude", 
-       col.regions = c("yellow","darkgreen","purple"), 
-       colorkey = list(width = 2, height = 0.25, labels = list(at=labelno, labels=labeltext)),
+       col.regions = c("gray","blue","red"), 
+       colorkey = list(width = 2, height = 0.25, labels = list(at=labelno, labels=labeltext))
        )
 
 # Printing population
