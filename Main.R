@@ -37,13 +37,19 @@ cityname <- as.character(placesRD$name[row.names(placesRD) == cityrowname])[1]
 
 # Post-processing/plotting
 loclabel<- c(placeswithinbuffer$x,placeswithinbuffer$y+80) # +80 to have the name just above the marker
-spplot(industrialbuf, zcol='type', main = "Buffer around industrial railway, and intersected city", 
-       sp.layout=list(list("sp.points", placeswithinbuffer, pch=19, cex=2, col="darkgreen"),
-                      list("sp.text",loclabel,cityname, cex=2),
-                      list("sp.lines",industrial, col="purple")),
-       scales = list(draw = TRUE), xlab="Longitude", ylab="Latitude",
-       col.regions=c("red","yellow")
-      )
+labelno <- c(1,2,3)
+labeltext <- c('Buffer (1000 m)','City','Industrial railway')
+industrialbuf$legend.labels <- factor(industrialbuf$type, levels = 0:2)
+spplot(industrialbuf, zcol='legend.labels', main = "Buffer around industrial railway, and intersected city", 
+       sp.layout=list(list("sp.polygons", industrialbuf, fill = "yellow"),
+                      list("sp.points", placeswithinbuffer, pch=19, cex=2, col="darkgreen"),
+                      list("sp.text",loclabel,cityname, cex=1.5),
+                      list("sp.lines",industrial, col="purple")
+                      ),
+       scales = list(draw = TRUE), xlab="Longitude", ylab="Latitude", 
+       col.regions = c("yellow","darkgreen","purple"), 
+       colorkey = list(width = 2, height = 0.25, labels = list(at=labelno, labels=labeltext)),
+       )
 
 # Printing population
 popcity <- placesRD$population[row.names(placesRD) == cityrowname][1]
